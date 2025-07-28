@@ -1,0 +1,8 @@
+prefix=/home/manifoldtech/neupan_ws/devel
+
+Name: neupan_ros
+Description: Description of neupan_ros
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

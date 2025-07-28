@@ -1,0 +1,105 @@
+<launch>
+    <!-- 加载参数 -->
+    <arg name="config_file" default= '/home/manifoldtech/neupan_ws/src/neupan_ros/example/real_robot/config/neupan_planner_real.yaml'/>
+    <arg name="map_frame" default='map'/>
+    <arg name="base_frame" default='base_link'/>
+    <arg name="lidar_frame" default='laser_link'/>
+    <arg name="imu_frame" default='imu_link'/>
+    <arg name="scan_range" default='10.0'/>
+    <arg name="scan_angle_range" default='360'/>
+    <arg name="marker_size" default='0.05'/>
+    <arg name="marker_z" default='0.3'/>
+    <arg name="scan_downsample" default='12'/>  <!-- 增加点云降采样率，减少数据传输量 -->
+    <arg name="dune_checkpoint" default='/home/manifoldtech/neupan_ws/src/neupan_ros/example/gazebo_limo/pretrain_limo/model_5000_tron.pth'/>
+    <arg name="refresh_initial_path" default='true'/>  <!-- 启用路径刷新以支持动态重规划 -->
+    
+    <!-- Global Path Planner Parameters -->
+    <arg name="enable_global_planner" default='true'/>
+    <arg name="planner_type" default='astar'/>
+    <arg name="inflation_radius" default='0.3'/>
+    
+    <!-- WebSocket参数 -->
+    <arg name="ws_url" default="ws://10.192.1.2:5000"/>
+    <arg name="accid" default="WF_TRON1A_234"/>
+    
+    <!-- 地图参数 -->
+    <arg name="map_file" default="$(find neupan_ros)/src/map/map.yaml"/>
+    
+    <!-- 启动地图服务器 -->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+    
+    
+    <!-- 启动重定位节点替代Fast-LIO2 -->
+    <include file="$(find relocalization_pkg)/launch/relocalization.launch" />
+    
+    
+    <!-- 只保留base_link到传感器的静态变换 -->
+    <node pkg="tf" type="static_transform_publisher" name="base_to_laser" 
+          args="0 0 0.1 0 0 0 base_link laser_link 100" />
+          
+    <!-- 添加IMU静态TF -->
+    <node pkg="tf" type="static_transform_publisher" name="base_to_imu" 
+          args="0 0 0.1 0 0 0 base_link imu_link 100" />
+    
+    <!-- 启动全局路径规划器 -->
+    <!-- <include if="$(arg enable_global_planner)" file="$(find neupan_ros)/example/real_robot/launch/global_planner.launch">
+        <arg name="map_frame" value="$(arg map_frame)"/>
+        <arg name="planner_type" value="$(arg planner_type)"/>
+        <arg name="inflation_radius" value="$(arg inflation_radius)"/>
+    </include> -->
+    
+    <!-- 启动neupan控制节点 -->
+    <node name='neupan_control' pkg="neupan_ros" type="neupan_node.py" output="screen">
+        <param name="config_file" value="$(arg config_file)"/>
+        <param name="map_frame" value="$(arg map_frame)"/>
+        <param name="base_frame" value="$(arg base_frame)"/>
+        <param name="lidar_frame" value="$(arg lidar_frame)"/>
+        <param name="scan_range" value="$(arg scan_range)"/>
+        <param name="scan_angle_range" value="$(arg scan_angle_range)"/>
+        <param name="marker_size" value="$(arg marker_size)"/>
+        <param name="marker_z" value="$(arg marker_z)"/>
+        <param name="scan_downsample" value="$(arg scan_downsample)"/>
+        <param name="dune_checkpoint" value="$(arg dune_checkpoint)"/>
+        <param name="refresh_initial_path" value="$(arg refresh_initial_path)"/>
+        <!-- 启用neupan_control的cmd_vel发布，让端到端模型控制机器人 -->
+        <remap from="/neupan_cmd_vel" to="/cmd_vel"/>
+        <!-- 将NeuPAN的neupan_goal重映射为move_base_simple/goal，确保能接收RViz目标 -->
+        <remap from="/neupan_goal" to="/move_base_simple/goal"/>
+    </node>
+    
+    <!-- 使用独立的延迟启动脚本 -->
+    <node name="neupan_delayed_starter" pkg="neupan_ros" type="delayed_neupan_starter.py" output="screen">
+        <param name="delay_time" value="10.0"/>
+        <param name="target_node" value="neupan_control"/>
+    </node>
+    
+    <!-- 启动简单的全局路径规划器 -->
+     <node pkg="global_planner" type="planner" name="global_planner" output="screen">
+        <param name="use_dijkstra" value="false"/>  
+        <param name="use_grid_path" value="false"/>
+        <param name="old_navfn_behavior" value="false"/>
+        <param name="lethal_cost" value="253"/>
+        <param name="neutral_cost" value="50"/>
+        <param name="cost_factor" value="3.0"/>
+        <param name="publish_potential" value="true"/>
+        <param name="orientation_mode" value="1"/>
+        <param name="orientation_window_size" value="1"/>
+        <param name="global_frame" value="map"/>
+        <remap from="/path" to="/initial_path"/>
+        <remap from="/goal" to="/move_base_simple/goal"/>
+     </node> 
+    
+
+
+    <!-- 启动WebSocket桥接节点，使用系统Python3解释器 -->
+    <node name="robot_websocket_bridge" pkg="websocket" type="robot_websocket_bridge.py" output="screen">
+        <param name="ws_url" value="$(arg ws_url)"/>
+        <param name="accid" value="$(arg accid)"/>
+        <!-- WebSocket桥接器直接使用move_base_simple/goal话题 -->
+    </node>
+    
+    <!-- 启动RViz可视化 -->
+    <node pkg="rviz" type="rviz" name="rviz" 
+          args="-d $(find neupan_ros)/example/real_robot/config/neupan_navigation.rviz" 
+          respawn="false" output="screen" />
+</launch>

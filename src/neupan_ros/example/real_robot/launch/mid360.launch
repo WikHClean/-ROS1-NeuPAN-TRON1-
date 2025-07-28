@@ -1,0 +1,39 @@
+<launch>
+  <!-- 启动Livox ROS驱动 -->
+  <arg name="lvx_file_path" default="livox_test.lvx"/>
+  <arg name="bd_list" default=""/>
+  <arg name="xfer_format" default="1"/>
+  <arg name="multi_topic" default="0"/>
+  <arg name="data_src" default="0"/>
+  <arg name="publish_freq" default="10.0"/>
+  <arg name="output_type" default="0"/>
+  <arg name="rviz_enable" default="false"/>
+  <arg name="frame_id" default="laser_link"/>
+  
+  <!-- MID360雷达的IP地址和端口 -->
+  <arg name="lidar_ip" default="10.42.0.1"/>
+  <arg name="lidar_port" default="50001"/>
+  <arg name="cmd_port" default="50002"/>
+
+  <node name="livox_lidar_publisher" pkg="livox_ros_driver"
+      type="livox_ros_driver_node" required="true"
+      output="screen" args="$(arg bd_list)">
+    <param name="xfer_format" value="$(arg xfer_format)"/>
+    <param name="multi_topic" value="$(arg multi_topic)"/>
+    <param name="data_src" value="$(arg data_src)"/>
+    <param name="publish_freq" type="double" value="$(arg publish_freq)"/>
+    <param name="output_data_type" value="$(arg output_type)"/>
+    <param name="lvx_file_path" value="$(arg lvx_file_path)"/>
+    <param name="user_config_path" value="$(find livox_ros_driver)/config/livox_lidar_config.json"/>
+    <param name="frame_id" value="$(arg frame_id)"/>
+    
+    <!-- 设置雷达的IP地址和端口 -->
+    <param name="lidar_ip" value="$(arg lidar_ip)"/>
+    <param name="lidar_port" value="$(arg lidar_port)"/>
+    <param name="cmd_port" value="$(arg cmd_port)"/>
+  </node>
+
+  <!-- 发布从base_link到laser_link的静态变换 -->
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_link" 
+        args="0.0 0.0 0.1 0 0 0 base_link laser_link 100" />
+</launch>

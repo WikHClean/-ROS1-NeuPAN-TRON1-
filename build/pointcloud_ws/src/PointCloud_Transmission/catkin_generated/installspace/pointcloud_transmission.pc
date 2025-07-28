@@ -1,0 +1,8 @@
+prefix=/home/manifoldtech/neupan_ws/install
+
+Name: pointcloud_transmission
+Description: Description of pointcloud_transmission
+Version: 1.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lpointcloud_transmission
+Requires: roscpp rospy std_msgs sensor_msgs geometry_msgs tf2 tf2_ros pcl_ros pcl_conversions

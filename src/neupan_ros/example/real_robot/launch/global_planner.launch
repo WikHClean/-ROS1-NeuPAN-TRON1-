@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Global Path Planner Parameters -->
+    <arg name="map_frame" default="map"/>
+    <arg name="planner_type" default="astar"/>  <!-- astar, dijkstra, rrt -->
+    <arg name="inflation_radius" default="0.3"/>
+    <arg name="launch_delay" default="0.0"/>  <!-- 启动延迟参数 -->
+    
+    <!-- 启动延迟节点（如果需要） -->
+    <!-- <node if="$(eval arg('launch_delay') > 0)" name="global_planner_delay" pkg="neupan_ros" type="launch_delay.py" output="screen">
+        <param name="delay_time" value="$(arg launch_delay)"/>
+        <param name="target_node" value="global_path_planner"/>
+    </node> -->
+    
+    <!-- Launch Global Path Planner Node -->
+    <node name="global_path_planner" pkg="neupan_ros" type="global_planner_node.py" output="screen"
+          launch-prefix="$(eval 'sleep ' + str(arg('launch_delay')) + '; ' if arg('launch_delay') > 0 else '')">
+        <param name="map_frame" value="$(arg map_frame)"/>
+        <param name="planner_type" value="$(arg planner_type)"/>
+        <param name="inflation_radius" value="$(arg inflation_radius)"/>
+    </node>
+    
+    <!-- RViz for visualization (optional) -->
+    <arg name="rviz" default="false"/>
+    <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" 
+          args="-d $(find neupan_ros)/example/real_robot/config/neupan_navigation.rviz"/>
+          
+</launch>

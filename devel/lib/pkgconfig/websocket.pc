@@ -1,0 +1,8 @@
+prefix=/home/manifoldtech/neupan_ws/devel
+
+Name: websocket
+Description: Description of websocket
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

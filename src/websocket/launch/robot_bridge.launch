@@ -1,0 +1,6 @@
+<launch>
+    <node name="robot_websocket_bridge" pkg="robot_websocket_bridge" type="robot_websocket_bridge.py" output="screen">
+        <param name="accid" value="WF_TRON1A_234" />
+        <param name="ws_url" value="ws://10.192.1.2:5000" />
+    </node>
+</launch>

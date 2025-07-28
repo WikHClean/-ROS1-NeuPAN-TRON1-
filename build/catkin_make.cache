@@ -1,0 +1,2 @@
+limo_ros/limo_base:limo_ros/limo_bringup:limo_ros/limo_description:limo_ros/limo_gazebo_sim:neupan_ros:pointcloud_ws/src/PointCloud_Transmission:relo:rvo_ros:websocket
+-DCATKIN_DEVEL_PREFIX=/home/manifoldtech/neupan_ws/devel -DCMAKE_INSTALL_PREFIX=/home/manifoldtech/neupan_ws/install -G Unix Makefiles

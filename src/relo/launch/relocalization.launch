@@ -1,0 +1,12 @@
+<launch>
+  <!-- 启动重定位主程序 -->
+  <node name="relocalization_node" pkg="relocalization_pkg" type="234.py" output="screen">
+    <param name="use_sim_time" value="false"/>
+    <rosparam command="load" file="/home/manifoldtech/neupan_ws/src/relo/src/config.yaml"/>
+    <remap from="/initial_pose" to="/initial_pose"/>
+  </node>
+
+</launch>
+  <!-- 启动 RViz（可选）
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find your_package_name)/rviz/relocalization.rviz" required="false" />
+</launch> -->

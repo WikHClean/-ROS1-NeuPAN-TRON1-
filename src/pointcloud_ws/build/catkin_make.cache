@@ -1,0 +1,2 @@
+PointCloud_Transmission
+-DCATKIN_DEVEL_PREFIX=/home/wch/neupan_ws/src/pointcloud_ws/devel -DCMAKE_INSTALL_PREFIX=/home/wch/neupan_ws/src/pointcloud_ws/install -G Unix Makefiles

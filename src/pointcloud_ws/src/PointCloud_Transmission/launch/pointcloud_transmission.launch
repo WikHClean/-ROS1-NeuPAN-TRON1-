@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Arguments with defaults -->
+  <arg name="server_ip" default="10.42.0.1" />
+  <arg name="frame_id" default="map" />
+  <arg name="child_frame_id" default="lidar" />
+  <arg name="publish_rate" default="10.0" />
+  <arg name="publish_tf" default="true" />
+  <arg name="pointcloud_topic" default="pointcloud" />
+  <arg name="pose_topic" default="pose" />
+  <arg name="imu_topic" default="livox/imu" />
+  <arg name="imu_frame_id" default="imu_link" />
+  <arg name="imu_rate" default="200.0" />
+  <arg name="simulate_imu" default="true" />
+  <arg name="rviz" default="false" />
+
+  <!-- PointCloud Transmission Node -->
+  <node name="pointcloud_transmission_node" pkg="pointcloud_transmission" type="node" output="screen">
+    <!-- Server IP address -->
+    <param name="server_ip" value="$(arg server_ip)" />
+    
+    <!-- Frame IDs -->
+    <param name="frame_id" value="$(arg frame_id)" />
+    <param name="child_frame_id" value="$(arg child_frame_id)" />
+    <param name="imu_frame_id" value="$(arg imu_frame_id)" />
+    
+    <!-- Publishing rate in Hz -->
+    <param name="publish_rate" value="$(arg publish_rate)" />
+    <param name="imu_rate" value="$(arg imu_rate)" />
+    
+    <!-- Whether to publish TF transforms -->
+    <param name="publish_tf" value="$(arg publish_tf)" />
+    
+    <!-- Whether to simulate IMU data -->
+    <param name="simulate_imu" value="$(arg simulate_imu)" />
+    
+    <!-- Remap topics if needed -->
+    <remap from="pointcloud" to="$(arg pointcloud_topic)" />
+    <remap from="pose" to="$(arg pose_topic)" />
+    <remap from="livox/imu" to="$(arg imu_topic)" />
+  </node>
+  
+  <!-- Optional: Start RViz for visualization -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find pointcloud_transmission)/config/pointcloud_transmission.rviz" if="$(arg rviz)" />
+</launch>

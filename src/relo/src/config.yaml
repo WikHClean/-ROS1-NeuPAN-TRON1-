@@ -1,0 +1,3 @@
+map_config:
+  map_filename: "/home/manifoldtech/neupan_ws/src/relo/src/map.pcd"  # 修正为正确的文件名
+

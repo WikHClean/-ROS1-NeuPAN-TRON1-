@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/wch/neupan_ws/src/pointcloud_ws/devel/setup.sh

@@ -1,0 +1,19 @@
+# PointCloud Transmission Node Configuration
+
+# Network settings
+server_ip: "192.168.1.100"  # IP address of the data server
+
+# Frame settings
+frame_id: "map"             # Parent frame for pose data
+child_frame_id: "lidar"     # Child frame for point cloud data
+
+# Publishing settings
+publish_rate: 10.0          # Publishing frequency in Hz
+publish_tf: true            # Whether to publish TF transforms
+
+# Topic settings (optional remapping)
+# pointcloud_topic: "/custom/pointcloud"
+# pose_topic: "/custom/pose"
+
+# Logging level (DEBUG, INFO, WARN, ERROR)
+log_level: "INFO"
