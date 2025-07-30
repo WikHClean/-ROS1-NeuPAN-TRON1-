@@ -1,37 +1,77 @@
-# neupan_ros
+# NeuPAN ROS
 
-## Prerequisites
+基于NeuPAN算法的ROS导航系统，集成了重定位和路径规划功能。
+
+## 系统要求
+
 - Ubuntu 20.04
 - ROS Noetic
-- Python = 3.8
-- Installed [NeuPAN Planner](https://github.com/hanruihua/neupan).
+- Python 3.8
+- 已安装 [NeuPAN Planner](https://github.com/hanruihua/neupan)
 
-## Installation
-1.1 NeuPAN安装
-    - git clone https://github.com/hanruihua/NeuPAN
-    - cd NeuPAN
-    - git checkout py38
-    - pip install -e . 
+## 安装步骤
 
-1.2 Relo_ws环境配置
-    - python3 -m pip install --upgrade pip
-    - sudo apt install python3-dev python3-pip
-    - pip install open3d scipy numpy open3d -i https://pypi.tuna.tsinghua.edu.cn/simple
-    - pip install numpy==1.24.0 -i https://pypi.tuna.tsinghua.edu.cn/simple
-    - pip install thread -i https://pypi.tuna.tsinghua.edu.cn/simple
-    
-1.3 Websocket环境配置
-    - sudo apt install python3-dev python3-pip
-    - sudo pip3 install websocket-client
-    
-1.4 ROS环境配置
-    - cd ~/neupan_ws && catkin_make
+### 1. NeuPAN算法安装
 
-2. 启动NeuPAN节点
-    - source  ~/neupan_ws/devel/setup.bash
-    - roslaunch neupan_ros neupan_real_robot.launch 
+```bash
+git clone https://github.com/hanruihua/NeuPAN
+cd NeuPAN
+git checkout py38
+pip install -e .
+```
 
-2.1 如需修改参数，可以修改neupan_planner_real.launch文件中的参数
-2.2 neupan_ros的详细介绍请参考https://github.com/hanruihua/neupan_ros
-    NeuPAN算法的详细介绍请参考https://github.com/hanruihua/NeuPAN，在此感谢作者的支持
+### 2. 重定位环境配置
 
+```bash
+python3 -m pip install --upgrade pip
+sudo apt install python3-dev python3-pip
+pip install open3d scipy numpy -i https://pypi.tuna.tsinghua.edu.cn/simple
+pip install numpy==1.24.0 -i https://pypi.tuna.tsinghua.edu.cn/simple
+pip install thread -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+### 3. WebSocket环境配置
+
+```bash
+sudo apt install python3-dev python3-pip
+sudo pip3 install websocket-client
+```
+
+### 4. ROS环境编译
+
+```bash
+cd ~/neupan_ws
+catkin_make
+```
+
+## 使用方法
+
+### 启动系统
+
+```bash
+source ~/neupan_ws/devel/setup.bash
+roslaunch neupan_ros neupan_real_robot.launch
+```
+
+### 参数配置
+
+- 如需修改参数，请编辑 `neupan_planner_real.yaml` 文件中的相关参数
+- 详细的参数说明请参考配置文件中的注释
+
+## 参考资料
+
+- [neupan_ros详细介绍](https://github.com/hanruihua/neupan_ros)
+- [NeuPAN算法详细介绍](https://github.com/hanruihua/NeuPAN)
+
+感谢原作者的支持！
+
+## 项目结构
+
+```
+neupan_ws/
+├── src/
+│   ├── neupan_ros/          # NeuPAN ROS包
+│   └── relo/                # 重定位包
+├── devel/                   # 编译输出
+└── build/                   # 编译缓存
+```
