@@ -22,6 +22,12 @@ cd NeuPAN
 git checkout py38
 pip install -e .
 ```
+完成Neupan算法配置后，可以进行此项目的配置
+```bash
+git clone https://github.com/WikHClean/-ROS1-NeuPAN-TRON1-.git
+cd neupan_ws\
+```
+之后进行第二步配置
 
 ### 2. 重定位环境配置
 
