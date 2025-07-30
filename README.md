@@ -74,6 +74,9 @@ roslaunch neupan_ros neupan_real_robot.launch
 
 感谢原作者的支持！
 
+##License
+This project is licensed under the GNU General Public License v3.0.
+
 ## 项目结构
 
 ```
